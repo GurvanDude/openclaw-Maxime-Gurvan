@@ -105,7 +105,7 @@ fetch(url)
 | `app.py` | Interface en ligne de commande avec argparse |
 
 Les choix de conception sont detailles dans le rapport technique,
-[text](DataHarvest_Rapport_MaxMag.pdf).
+[DataHarvest_Rapport_MaxMag.pdf](DataHarvest_Rapport_MaxMag.pdf).
 
 ## Configuration
 
