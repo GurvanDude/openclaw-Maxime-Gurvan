@@ -48,9 +48,7 @@ class GenericPipeline(BasePipeline):
         items: list[dict] = []
         for index in range(nb_items):
             item = {
-                field: self._extract_value(
-                    field, elements[index] if index < len(elements) else None, base_url
-                )
+                field: self._extract_value(field, self._pick(elements, index, nb_items), base_url)
                 for field, elements in matches.items()
             }
             items.append(item)
@@ -58,13 +56,32 @@ class GenericPipeline(BasePipeline):
         return items
 
     @staticmethod
+    def _pick(elements: list, index: int, nb_items: int):
+        """Choisit l'element a utiliser pour l'item `index`.
+
+        Cas particulier : si un selecteur ne trouve qu'UN SEUL element alors que
+        la page contient plusieurs items (ex: une seule breadcrumb de categorie
+        pour 20 livres), cette valeur est consideree comme valable pour toute la
+        page et diffusee (broadcast) a tous les items plutot que reservee au
+        premier seulement.
+        """
+        if len(elements) == 1 and nb_items > 1:
+            return elements[0]
+        if index < len(elements):
+            return elements[index]
+        return None
+
+    @staticmethod
     def _extract_value(field: str, element, base_url: str | None) -> str:
         """Extrait une valeur texte/attribut d'un element BeautifulSoup, sans jamais lever.
 
         Le champ nomme 'url' est traite specifiquement (on veut le href, pas le
         texte) -- c'est une convention du schema de config, pas un selecteur
-        code en dur. Les autres champs sont extraits generiquement : attribut
-        'datetime' si present (balises <time>), sinon le texte de l'element.
+        code en dur. Les autres champs sont extraits generiquement, dans cet
+        ordre : attribut 'datetime' (balises <time>), attribut 'content'
+        (balises <meta>, ex: microdata itemprop='keywords'), attribut 'title'
+        (texte complet quand le texte visible est tronque), sinon le texte de
+        l'element.
         """
         if element is None:
             return ""
@@ -76,6 +93,12 @@ class GenericPipeline(BasePipeline):
 
         if element.has_attr("datetime"):
             return element["datetime"]
+
+        if element.has_attr("content"):
+            return element["content"]
+
+        if element.has_attr("title"):
+            return element["title"]
 
         return element.get_text(strip=True)
 

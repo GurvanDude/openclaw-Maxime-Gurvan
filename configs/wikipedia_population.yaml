@@ -1,0 +1,27 @@
+# fr.wikipedia.org -- niveau 2 -- tableau structure (classement par population)
+#
+# ATTENTION -- selecteurs les MOINS certains des 5 configs. Mon outil de
+# recuperation web convertit la page en markdown et perd les classes CSS
+# exactes du tableau ; ces selecteurs reposent sur la structure standard des
+# "wikitable" de Wikipedia (table.wikitable, une ligne <tr> par pays, colonnes
+# via td:nth-child) mais N'ONT PAS ete verifies en direct avec les vraies
+# classes de la page. A verifier/ajuster avec les DevTools avant de lancer un
+# vrai crawl (colonnes, eventuels rowspan/colspan sur les ex-aequo de rang).
+url: https://fr.wikipedia.org/wiki/Liste_des_pays_par_population
+pagination:
+  pattern: null
+  start: 1
+  max_pages: 1
+selectors:
+  titre: table.wikitable tr td:nth-child(2)
+  url: table.wikitable tr td:nth-child(2)
+  rang: table.wikitable tr td:nth-child(1)
+  population: table.wikitable tr td:nth-child(3)
+fetcher:
+  delay: 2.0
+  retries: 2
+  timeout: 20
+  user_agent: DataHarvest/1.0 (+contact@ipssi.fr)
+store:
+  backend: sqlite
+  path: output/wikipedia_population.db

@@ -1,0 +1,25 @@
+# books.toscrape.com -- niveau 1 -- categorie "Mystery"
+# NOTE : le champ "note" (etoiles /5) n'est volontairement pas extrait : sur ce
+# site la notation n'existe que via le nom de la classe CSS (ex: "star-rating
+# Three"), sans texte ni attribut lisible -- notre GenericPipeline (extraction
+# generique par texte/attribut) ne le supporte pas. Voir section "difficultes"
+# du rapport technique.
+url: https://books.toscrape.com/catalogue/category/books/mystery_3/index.html
+pagination:
+  pattern: null
+  start: 1
+  max_pages: 1
+selectors:
+  titre: article.product_pod h3 a
+  url: article.product_pod h3 a
+  prix: article.product_pod p.price_color
+  disponibilite: article.product_pod p.instock.availability
+  categorie: ul.breadcrumb li.active
+fetcher:
+  delay: 1.0
+  retries: 3
+  timeout: 15
+  user_agent: DataHarvest/1.0 (+contact@ipssi.fr)
+store:
+  backend: csv
+  path: output/books_toscrape.csv

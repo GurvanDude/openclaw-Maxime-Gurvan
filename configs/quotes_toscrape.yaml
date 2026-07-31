@@ -1,0 +1,23 @@
+# quotes.toscrape.com -- niveau 1 -- pagination /page/{n}/
+# Le champ "tags" utilise la balise <meta class="keywords" content="...">
+# presente sur chaque citation (microdata), qui liste tous les tags en une
+# seule chaine separee par des virgules -- plus fiable qu'un selecteur par tag
+# individuel (nombre de tags variable d'une citation a l'autre).
+url: https://quotes.toscrape.com/
+pagination:
+  pattern: /page/{n}/
+  start: 1
+  max_pages: 5
+selectors:
+  titre: .quote span.text
+  url: .quote > span > a
+  auteur: .quote small.author
+  tags: .quote .keywords
+fetcher:
+  delay: 1.0
+  retries: 3
+  timeout: 15
+  user_agent: DataHarvest/1.0 (+contact@ipssi.fr)
+store:
+  backend: json
+  path: output/quotes_toscrape.json

@@ -1,0 +1,22 @@
+# blogdumoderateur.com -- niveau 3 -- pagination /page/{n}/ + categories
+# Reprend les selecteurs de l'exemple fourni par le sujet (configs/example_blog.yaml),
+# qui cible deja precisement ce site. A revalider rapidement avec DevTools :
+# le site a ete redesigne depuis la redaction du sujet, la structure a pu changer.
+url: https://www.blogdumoderateur.com/
+pagination:
+  pattern: /page/{n}/
+  start: 1
+  max_pages: 5
+selectors:
+  titre: h2.post-title a
+  url: h2.post-title a
+  date: time[datetime]
+  categorie: .cat-links a
+fetcher:
+  delay: 1.5
+  retries: 3
+  timeout: 15
+  user_agent: DataHarvest/1.0 (+contact@ipssi.fr)
+store:
+  backend: sqlite
+  path: output/blogdumoderateur.db

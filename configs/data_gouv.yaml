@@ -1,0 +1,32 @@
+# data.gouv.fr -- niveau 2 -- catalogue de jeux de donnees
+#
+# ATTENTION -- second config le moins certain. Le site est reconstruit sur un
+# frontend Nuxt/Vue recent (udata + cdata) dont je n'ai pas pu verifier les
+# classes CSS exactes (mon outil ne renvoie que du contenu converti en
+# markdown, sans les classes). Les selecteurs ci-dessous ciblent des motifs
+# structurels larges (titres h3 liens, liens vers /organizations/) -- risque
+# reel de faux positifs (ex: les titres de la section "Thematiques a la une"
+# qui ne sont pas des jeux de donnees). A verifier/scoper avec les DevTools
+# avant un vrai crawl. Le champ "date" ("Mis a jour le ...") n'est pas inclus
+# faute de selecteur fiable identifie.
+#
+# robots.txt (verifie en direct) interdit /datasets/search?* -- cette config
+# cible /fr/datasets/ (listing simple, sans parametres de recherche), donc
+# hors du perimetre interdit.
+url: https://www.data.gouv.fr/fr/datasets/
+pagination:
+  pattern: null
+  start: 1
+  max_pages: 1
+selectors:
+  titre: h3 a
+  url: h3 a
+  organisation: a[href*="/organizations/"]
+fetcher:
+  delay: 1.5
+  retries: 3
+  timeout: 20
+  user_agent: DataHarvest/1.0 (+contact@ipssi.fr)
+store:
+  backend: csv
+  path: output/data_gouv.csv

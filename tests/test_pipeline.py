@@ -97,6 +97,49 @@ def test_generic_pipeline_next_page_url_is_always_none():
     assert pipeline.next_page_url(HTML_TWO_ARTICLES, "https://example.com/") is None
 
 
+def test_process_prefers_title_attribute_over_truncated_text():
+    html = """
+    <article class="product_pod">
+      <h3><a href="/book-1" title="A Very Long Full Book Title">A Very Long F...</a></h3>
+    </article>
+    """
+    pipeline = GenericPipeline({"titre": "h3 a"})
+
+    result = pipeline.process(html)
+
+    assert result[0]["titre"] == "A Very Long Full Book Title"
+
+
+def test_process_reads_content_attribute_of_meta_tags():
+    html = """
+    <div class="quote">
+      <span class="text">Une citation</span>
+      <meta class="keywords" content="change,deep-thoughts,thinking">
+    </div>
+    """
+    pipeline = GenericPipeline({"citation": "span.text", "tags": ".keywords"})
+
+    result = pipeline.process(html)
+
+    assert result[0]["tags"] == "change,deep-thoughts,thinking"
+
+
+def test_process_broadcasts_single_match_selector_to_all_items():
+    html = """
+    <ul class="breadcrumb"><li class="active">Mystery</li></ul>
+    <article><h3><a href="/b1">Book 1</a></h3></article>
+    <article><h3><a href="/b2">Book 2</a></h3></article>
+    """
+    selectors = {"titre": "article h3 a", "categorie": "ul.breadcrumb li.active"}
+    pipeline = GenericPipeline(selectors)
+
+    result = pipeline.process(html)
+
+    assert len(result) == 2
+    assert result[0]["categorie"] == "Mystery"
+    assert result[1]["categorie"] == "Mystery"
+
+
 # ---- PaginationPipeline ----------------------------------------------------
 
 
