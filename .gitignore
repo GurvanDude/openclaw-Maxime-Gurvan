@@ -5,6 +5,8 @@ venv/
 *.egg-info/
 .pytest_cache/
 output/
+*.db
+*.csv
 *.sqlite
 *.sqlite3
 .DS_Store
