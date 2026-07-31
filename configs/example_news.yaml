@@ -1,0 +1,17 @@
+url: https://www.lemonde.fr/
+pagination:
+  pattern: null
+  start: 1
+  max_pages: 1
+selectors:
+  titre: h3.article__title a
+  url: h3.article__title a
+  date: time
+fetcher:
+  delay: 2.0
+  retries: 2
+  timeout: 20
+  user_agent: DataHarvest/1.0 (+contact@ipssi.fr)
+store:
+  backend: json
+  path: output/lemonde.json
